@@ -1,0 +1,21 @@
+name: Copy
+on:
+  workflow_run:
+    workflows: ['OnCreate']                    
+    types:
+      - completed
+  workflow_dispatch:    
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Copycat1
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ secrets.TOKEN }}
+        src_path: /tests/.
+        dst_path: /.
+        dst_owner: IlMkn
+        dst_repo_name: GACtionsTest
+        dst_branch: temp
+        src_branch: master
