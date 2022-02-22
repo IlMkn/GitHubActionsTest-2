@@ -16,6 +16,6 @@ jobs:
         src_path: /tests/.
         dst_path: /.
         dst_owner: IlMkn
-        dst_repo_name: GACtionsTest
+        dst_repo_name: GitHubActionsTest-2
         dst_branch: temp
         src_branch: master
