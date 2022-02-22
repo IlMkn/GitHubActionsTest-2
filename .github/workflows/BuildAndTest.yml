@@ -1,0 +1,98 @@
+name: BuildAndTest
+on:
+  workflow_run:
+    workflows: ['Copy']                    
+    types:
+      - completed
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '3.1.x' ]
+        
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: temp
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}  
+      - name: Create folder
+        run: |
+          mkdir myNewFolder 
+          
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+        
+      - name: Create sln
+        continue-on-error: true
+        id: step1
+        working-directory: ./myNewFolder
+        run: dotnet new sln --name t
+          
+      - name: Add csproj
+        continue-on-error: true
+        id: step2
+        run: |
+          dotnet sln ./myNewFolder/t.sln add **/TestConsoleApp.csproj
+          dotnet add XUnitTestProject1.csproj reference **/TestConsoleApp.csproj
+          dotnet sln ./myNewFolder/t.sln add XUnitTestProject1.csproj
+          nuget restore ./myNewFolder/t.sln
+                  
+      - name: Build and test
+        continue-on-error: true
+        id: step3
+        run: |
+          dotnet build ./myNewFolder/t.sln
+          dotnet test XUnitTestProject1.csproj --logger "trx;LogFileName=test-results.trx"   
+          
+      - name: Publish Unit Test Results
+        continue-on-error: true
+        id: step4
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-results  
+          path: ./**/TestResults/*.trx
+
+      - name: WorkflowStatus1
+        id: conclusion
+        if: |
+          steps.step1.outcome == 'success' &&
+          steps.step2.outcome == 'success' &&
+          steps.step3.outcome == 'success' &&
+          steps.step4.outcome == 'success' 
+        shell: bash
+        run: |
+          expr 0+0 > conclusion.txt
+          
+      - name: WorkflowStatus2
+        if: |
+          steps.step1.outcome != 'success' ||
+          steps.step2.outcome != 'success' ||
+          steps.step4.outcome != 'success' 
+        shell: bash
+        run: |
+          expr 0+1 > conclusion.txt    
+          
+          
+      - name: WorkflowStatus3
+        if: |
+          steps.step1.outcome == 'success' &&
+          steps.step2.outcome == 'success' &&
+          steps.step3.outcome != 'success' &&
+          steps.step4.outcome == 'success' 
+        shell: bash
+        run: |
+          expr 0+2 > conclusion.txt     
+          
+      - name: Upload conclusion
+        uses: actions/upload-artifact@v2
+        with:
+          name: conc
+          path: ./**/*.txt   
+          
+        
