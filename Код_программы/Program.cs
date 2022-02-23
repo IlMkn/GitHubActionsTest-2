@@ -150,7 +150,7 @@ namespace tempApp
                 }
                 ZipFile.ExtractToDirectory("conc.zip", "conc.txt");
                 string text = System.IO.File.ReadAllText(@"conc.txt\conclusion.txt");
-                if (text.Contains("0+0"))
+                if (text.Contains("0+0")|| text.Contains("0+2"))
                 {
                     int j = 0;
 
