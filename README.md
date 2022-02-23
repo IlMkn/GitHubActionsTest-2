@@ -4,12 +4,7 @@
 Инструкция:<br />
  1) Настройка:<br />
    1.1) Добавление PAT(при тестировании использовался PAT, дающий полный доступ ко всем функциям GH) в качестве секрета в репозиторий (по умолчанию в workflow будет использоваться секрет с названием "TOKEN");<br />
-   1.2) Добавить в .csproj теста следующий код:<br />
-        <PropertyGroup><br />
-          <GenerateAssemblyInfo>false</GenerateAssemblyInfo><br />
-          <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute><br />
-          <GenerateProgramFile>false</GenerateProgramFile><br />
-        </PropertyGroup><br />
+    1.2) При использовании собственных тестов, добавить в их .csproj код из текстового файла;
     1.3) В папке с примером локального файла после скачивания нужно поменять название папки "_github" на ".github" <br />
  2) Использование программы:<br />
     2.1) Заполнить все необходимые данные;<br />
