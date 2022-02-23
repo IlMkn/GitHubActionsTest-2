@@ -42,16 +42,20 @@ jobs:
           dotnet sln ./myNewFolder/t.sln add XUnitTestProject1.csproj
           nuget restore ./myNewFolder/t.sln
                   
-      - name: Build and test
+      - name: Build
         continue-on-error: true
         id: step3
         run: |
           dotnet build ./myNewFolder/t.sln
-          dotnet test XUnitTestProject1.csproj --logger "trx;LogFileName=test-results.trx"   
+      - name: Test
+        continue-on-error: true
+        id: step4
+        run: |
+          dotnet test XUnitTestProject1.csproj --logger "trx;LogFileName=test-results.trx"       
           
       - name: Publish Unit Test Results
         continue-on-error: true
-        id: step4
+        id: step5
         uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -64,7 +68,8 @@ jobs:
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
           steps.step3.outcome == 'success' &&
-          steps.step4.outcome == 'success' 
+          steps.step4.outcome == 'success' &&
+          steps.step5.outcome == 'success' 
         shell: bash
         run: |
           expr 0+0 > conclusion.txt
@@ -73,7 +78,8 @@ jobs:
         if: |
           steps.step1.outcome != 'success' ||
           steps.step2.outcome != 'success' ||
-          steps.step4.outcome != 'success' 
+          steps.step3.outcome != 'success' ||
+          steps.step5.outcome != 'success'
         shell: bash
         run: |
           expr 0+1 > conclusion.txt    
@@ -83,8 +89,9 @@ jobs:
         if: |
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
-          steps.step3.outcome != 'success' &&
-          steps.step4.outcome == 'success' 
+          steps.step4.outcome != 'success' &&
+          steps.step3.outcome == 'success' &&
+          steps.step5.outcome == 'success'
         shell: bash
         run: |
           expr 0+2 > conclusion.txt     
