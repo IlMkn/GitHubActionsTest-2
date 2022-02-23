@@ -1,0 +1,5 @@
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
