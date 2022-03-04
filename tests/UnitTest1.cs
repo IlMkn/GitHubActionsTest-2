@@ -9,7 +9,7 @@ namespace XUnitTestProject1
         public void Test1()
         {
             TestConsoleApp.Sum temp = new TestConsoleApp.Sum();
-            int expected = 50;
+            int expected = 53;
             Assert.Equal(expected, temp.GiveResult());
         }
     }
