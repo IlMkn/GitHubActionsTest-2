@@ -139,7 +139,7 @@ namespace tempApp
                 {
                     Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
                 }
-                ZipFile.ExtractToDirectory("conc.zip", "conc.txt");
+                ZipFile.ExtractToDirectory("conc.zip", "conc.txt", true);
                 string text = System.IO.File.ReadAllText(@"conc.txt\conclusion.txt");
                 if (text.Contains("0+0") || text.Contains("0+2"))
                 {
@@ -149,7 +149,7 @@ namespace tempApp
                     {
                         j++;
                     }
-
+                    File.Delete("test-results.zip");
                     durl = RCR.artifacts[j].archive_download_url;
                     try
                     {
