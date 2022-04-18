@@ -9,7 +9,27 @@ jobs:
   copy:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: temp
+        
+    - name: Check file existence1
+      id: check_files1
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "**/*.csproj"
+        
+    - name: Check file existence2
+      id: check_files2
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "**/*.cpp"    
+        
+    - uses: actions/checkout@v2
+      with:
+        ref: main    
     - name: Copycat1
+      if: steps.check_files1.outputs.files_exists == 'true' 
       uses: andstor/copycat-action@v3
       with:
         personal_token: ${{ secrets.TOKEN }}
@@ -19,3 +39,15 @@ jobs:
         dst_repo_name: GitHubActionsTest-2
         dst_branch: temp
         src_branch: main
+        
+    - name: Copycat2
+      if: steps.check_files2.outputs.files_exists == 'true' 
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ secrets.TOKEN }}
+        src_path: /test/.
+        dst_path: /test/.
+        dst_owner: IlMkn
+        dst_repo_name: GitHubActionsTest-2
+        dst_branch: temp
+        src_branch: main   
