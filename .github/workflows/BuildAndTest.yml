@@ -89,26 +89,26 @@ jobs:
       - name: WorkflowStatus1
         id: conclusion
         if: |
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
+          steps.check_files1.outputs.files_exists == 'true' &&
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
           steps.step3.outcome == 'success' &&
           steps.step4.outcome == 'success' &&
-          steps.step5.outcome == 'success'}} 
+          steps.step5.outcome == 'success' 
         shell: bash
         run: |
           expr 0+0 > conclusion.txt
           
       - name: WorkflowStatus2
         if: |
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step1.outcome != 'success'}} ||
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step2.outcome != 'success'}} ||
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step3.outcome != 'success'}} ||
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step5.outcome != 'success'}}
+          (steps.check_files1.outputs.files_exists == 'true' &&
+          steps.step1.outcome != 'success') ||
+          (steps.check_files1.outputs.files_exists == 'true' &&
+          steps.step2.outcome != 'success') ||
+          (steps.check_files1.outputs.files_exists == 'true' &&
+          steps.step3.outcome != 'success') ||
+          (steps.check_files1.outputs.files_exists == 'true' &&
+          steps.step5.outcome != 'success')
         shell: bash
         run: |
           expr 0+1 > conclusion.txt    
@@ -116,12 +116,12 @@ jobs:
           
       - name: WorkflowStatus3
         if: |
-          ${{steps.check_files1.outputs.files_exists == 'true' &&
+          steps.check_files1.outputs.files_exists == 'true' &&
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
           steps.step4.outcome != 'success' &&
           steps.step3.outcome == 'success' &&
-          steps.step5.outcome == 'success'}}
+          steps.step5.outcome == 'success'
         shell: bash
         run: |
           expr 0+2 > conclusion.txt     
