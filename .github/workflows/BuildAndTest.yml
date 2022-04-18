@@ -134,6 +134,8 @@ jobs:
         if: steps.check_files2.outputs.files_exists == 'true'
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && ls -l lib && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
       - uses: actions/checkout@v2
+        with:
+          ref: temp
       - name: configure
         id: cpp_s2
         if: steps.check_files2.outputs.files_exists == 'true'
