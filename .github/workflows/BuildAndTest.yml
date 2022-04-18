@@ -27,12 +27,7 @@ jobs:
         id: check_files2
         uses: andstor/file-existence-action@v1.1.0
         with:
-          files: "**/*.cpp"        
-          
-          
-        if: steps.check_files1.outputs.files_exists == 'true'     
-          
-          
+          files: "**/*.cpp"                
           
       - name: Setup dotnet
         if: steps.check_files1.outputs.files_exists == 'true'
