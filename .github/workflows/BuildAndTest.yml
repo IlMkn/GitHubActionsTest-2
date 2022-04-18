@@ -27,11 +27,6 @@ jobs:
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
         
-      - name: Check existence
-        uses: andstor/file-existence-action@v1.1.0
-        with:
-           files: "**/*.cpp"
-        
       - name: Create sln
         continue-on-error: true
         id: step1
