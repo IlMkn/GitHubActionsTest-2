@@ -37,8 +37,8 @@ jobs:
         continue-on-error: true
         id: step2
         run: |
-          dotnet sln ./myNewFolder/t.sln add **/TestConsoleApp.csproj
-          dotnet add XUnitTestProject1.csproj reference **/TestConsoleApp.csproj
+          dotnet sln ./myNewFolder/t.sln add TestConsoleApp.csproj
+          dotnet add XUnitTestProject1.csproj reference TestConsoleApp.csproj
           dotnet sln ./myNewFolder/t.sln add XUnitTestProject1.csproj
           nuget restore ./myNewFolder/t.sln
                   
