@@ -30,7 +30,7 @@ jobs:
       - name: Check existence
         uses: andstor/file-existence-action@v1.1.0
         with:
-           files: "**/*.csproj"
+           files: "**/*.cpp"
         
       - name: Create sln
         continue-on-error: true
