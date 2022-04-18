@@ -19,13 +19,13 @@ jobs:
           
       - name: Check file existence1
         id: check_files1
-        uses: andstor/file-existence-action@v1
+        uses: andstor/file-existence-action@v1.1.0
         with:
           files: "**/*.csproj"
         
       - name: Check file existence2
         id: check_files2
-        uses: andstor/file-existence-action@v1
+        uses: andstor/file-existence-action@v1.1.0
         with:
           files: "**/*.cpp"        
           
