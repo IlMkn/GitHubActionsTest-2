@@ -147,4 +147,4 @@ jobs:
       - name: Run Test
         id: cpp_s4
         if: steps.check_files2.outputs.files_exists == 'true'
-        run: /home/runner/work/mod-lab00-training/mod-lab00-training/build/test/mod-lab00-training.test 
+        run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/test/GitHubActionsTest-2.test 
