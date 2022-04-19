@@ -148,3 +148,37 @@ jobs:
         id: cpp_s4
         if: steps.check_files2.outputs.files_exists == 'true'
         run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/test/GitHubActionsTest-2.test 
+
+      - name: WorkflowStatus11
+        id: conclusion2
+        if: |
+          steps.check_files2.outputs.files_exists == 'true' &&
+          steps.cpp_s3.outcome == 'success' &&
+          steps.cpp_s4.outcome == 'success' 
+        shell: bash
+        run: |
+          expr 0+0 > conclusion.txt
+          
+      - name: WorkflowStatus21
+        if: |
+          (steps.check_files2.outputs.files_exists == 'true' &&
+          steps.cpp_s1.outcome != 'success') ||
+          (steps.check_files2.outputs.files_exists == 'true' &&
+          steps.cpp_s2.outcome != 'success') ||
+          (steps.check_files2.outputs.files_exists == 'true' &&
+          steps.cpp_s3.outcome != 'success')
+        shell: bash
+        run: |
+          expr 0+1 > conclusion.txt    
+          
+          
+      - name: WorkflowStatus31
+        if: |
+          steps.check_files2.outputs.files_exists == 'true' &&
+          steps.cpp_s1.outcome == 'success' &&
+          steps.cpp_s2.outcome == 'success' &&
+          steps.cpp_s3.outcome == 'success' &&
+          steps.cpp_s4.outcome != 'success'
+        shell: bash
+        run: |
+          expr 0+2 > conclusion.txt     
