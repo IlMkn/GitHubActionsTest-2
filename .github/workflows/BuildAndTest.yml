@@ -152,6 +152,7 @@ jobs:
         if: steps.check_files2.outputs.files_exists == 'true'
         run: cd build && make
       - name: Run Test
+        continue-on-error: true
         id: cpp_s4
         if: steps.check_files2.outputs.files_exists == 'true'
         run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/CPPTests/GitHubActionsTest-2.test 
