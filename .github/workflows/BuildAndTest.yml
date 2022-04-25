@@ -173,7 +173,7 @@ jobs:
           steps.cpp_s4.outcome == 'success' 
         shell: bash
         run: |
-          expr all checks have passed > conclusion.txt
+          expr all_checks_have_passed > conclusion.txt
           
       - name: WorkflowStatus21
         if: |
@@ -185,7 +185,7 @@ jobs:
           steps.cpp_s3.outcome != 'success')
         shell: bash
         run: |
-          expr a problem in configure/make/build has occured > conclusion.txt    
+          expr a_problem_in_configure/make/build_has_occured > conclusion.txt    
           
           
       - name: WorkflowStatus31
@@ -197,7 +197,7 @@ jobs:
           steps.cpp_s4.outcome != 'success'
         shell: bash
         run: |
-          expr all/some tests have failed > conclusion.txt    
+          expr all/some_tests_have_failed > conclusion.txt    
           
       - name: Upload conclusion
         if: steps.check_files2.outputs.files_exists == 'true'
