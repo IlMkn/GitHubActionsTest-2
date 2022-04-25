@@ -1,9 +1,0 @@
-name: OnCreate
-on:
-  create:
-    branches: 
-jobs:
-  sync-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
