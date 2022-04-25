@@ -73,7 +73,7 @@ jobs:
         run: |
           dotnet test XUnitTestProject1.csproj --logger "trx;LogFileName=test-results.trx"       
           
-      - name: WorkflowStatus1
+      - name: WorkflowStatus(CS)1
         id: conclusion
         if: |
           steps.check_files1.outputs.files_exists == 'true' &&
@@ -86,7 +86,7 @@ jobs:
         run: |
           expr DotNet_all_checks_have_passed > conclusion.txt
           
-      - name: WorkflowStatus2
+      - name: WorkflowStatus(CS)2
         if: |
           (steps.check_files1.outputs.files_exists == 'true' &&
           steps.step1.outcome != 'success') ||
@@ -101,7 +101,7 @@ jobs:
           expr DotNet_a_problem_in_building_a_solution_has_occured > conclusion.txt    
           
           
-      - name: WorkflowStatus3
+      - name: WorkflowStatus(CS)3
         if: |
           steps.check_files1.outputs.files_exists == 'true' &&
           steps.step1.outcome == 'success' &&
@@ -126,9 +126,9 @@ jobs:
         with:
           path: CMakeLists.txt
           contents: |
-            add_subdirectory(test)
+            add_subdirectory(CPPTests)
           write-mode: append      
-      - name: Commit report
+      - name: Commit CMake change
         run: |
           git config --global user.name 'Github Actions'
           git config --global user.email 'action@github.com'
@@ -156,7 +156,7 @@ jobs:
         if: steps.check_files2.outputs.files_exists == 'true'
         run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/test/GitHubActionsTest-2.test 
 
-      - name: WorkflowStatus11
+      - name: WorkflowStatus(CPP)1
         id: conclusion2
         if: |
           steps.check_files2.outputs.files_exists == 'true' &&
@@ -166,7 +166,7 @@ jobs:
         run: |
           expr CPP_all_checks_have_passed > conclusion.txt
           
-      - name: WorkflowStatus21
+      - name: WorkflowStatus(CPP)2
         if: |
           (steps.check_files2.outputs.files_exists == 'true' &&
           steps.cpp_s1.outcome != 'success') ||
@@ -179,7 +179,7 @@ jobs:
           expr CPP_a_problem_in_configure/make/build_has_occured > conclusion.txt    
           
           
-      - name: WorkflowStatus31
+      - name: WorkflowStatus(CPP)3
         if: |
           steps.check_files2.outputs.files_exists == 'true' &&
           steps.cpp_s1.outcome == 'success' &&
