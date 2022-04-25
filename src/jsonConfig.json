@@ -1,0 +1,8 @@
+{
+    "PersonalAccessToken": "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",
+    "User": "IlMkn",
+    "Repo": "IlMkn/GitHubActionsTest-2",
+    "SourceDir": "sourceDirCS",
+    "targetDir": "testDirectory2/targetDir",
+    "deleteDir": "testDirectory2"
+}
