@@ -80,8 +80,7 @@ jobs:
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
           steps.step3.outcome == 'success' &&
-          steps.step4.outcome == 'success' &&
-          steps.step5.outcome == 'success' 
+          steps.step4.outcome == 'success'  
         shell: bash
         run: |
           expr DotNet_all_checks_have_passed > conclusion.txt
@@ -94,8 +93,7 @@ jobs:
           steps.step2.outcome != 'success') ||
           (steps.check_files1.outputs.files_exists == 'true' &&
           steps.step3.outcome != 'success') ||
-          (steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step5.outcome != 'success')
+          (steps.check_files1.outputs.files_exists == 'true')
         shell: bash
         run: |
           expr DotNet_a_problem_in_building_a_solution_has_occured > conclusion.txt    
@@ -107,8 +105,7 @@ jobs:
           steps.step1.outcome == 'success' &&
           steps.step2.outcome == 'success' &&
           steps.step4.outcome != 'success' &&
-          steps.step3.outcome == 'success' &&
-          steps.step5.outcome == 'success'
+          steps.step3.outcome == 'success' 
         shell: bash
         run: |
           expr DotNet_all/some_tests_have_failed > conclusion.txt     
@@ -129,6 +126,7 @@ jobs:
             add_subdirectory(CPPTests)
           write-mode: append      
       - name: Commit CMake change
+        if: steps.check_files2.outputs.files_exists == 'true'
         run: |
           git config --global user.name 'Github Actions'
           git config --global user.email 'action@github.com'
