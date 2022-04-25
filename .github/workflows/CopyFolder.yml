@@ -51,18 +51,3 @@ jobs:
         dst_repo_name: GitHubActionsTest-2
         dst_branch: temp
         src_branch: main   
-     
-    - name: Checkout 
-      if: steps.check_files2.outputs.files_exists == 'true' 
-      uses: actions/checkout@v2
-      with:
-        ref: temp  
-        
-    - name: AppendToCMake 
-      if: steps.check_files2.outputs.files_exists == 'true' 
-      uses: DamianReeves/write-file-action@v1.0
-      with:
-        path: ${{ env.home}}/.txt
-        contents: |
-          echo "add_subdirectory(test)"
-        write-mode: append    
