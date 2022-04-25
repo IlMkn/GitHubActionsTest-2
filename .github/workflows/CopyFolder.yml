@@ -33,7 +33,7 @@ jobs:
       uses: andstor/copycat-action@v3
       with:
         personal_token: ${{ secrets.TOKEN }}
-        src_path: /tests/.
+        src_path: /CSTests/.
         dst_path: /.
         dst_owner: IlMkn
         dst_repo_name: GitHubActionsTest-2
@@ -45,8 +45,8 @@ jobs:
       uses: andstor/copycat-action@v3
       with:
         personal_token: ${{ secrets.TOKEN }}
-        src_path: /test/.
-        dst_path: /test/.
+        src_path: /CPPTests/.
+        dst_path: /CPPTests/.
         dst_owner: IlMkn
         dst_repo_name: GitHubActionsTest-2
         dst_branch: temp
