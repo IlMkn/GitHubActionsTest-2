@@ -93,7 +93,7 @@ jobs:
           steps.step5.outcome == 'success' 
         shell: bash
         run: |
-          expr DotNet: All checks have passed > conclusion.txt
+          expr all checks have passed > conclusion.txt
           
       - name: WorkflowStatus2
         if: |
@@ -107,7 +107,7 @@ jobs:
           steps.step5.outcome != 'success')
         shell: bash
         run: |
-          expr DotNet: A problem in building a solution has occured> conclusion.txt    
+          expr a problem in building a solution has occured> conclusion.txt    
           
           
       - name: WorkflowStatus3
@@ -120,7 +120,7 @@ jobs:
           steps.step5.outcome == 'success'
         shell: bash
         run: |
-          expr DotNet: All/Some tests have failed > conclusion.txt     
+          expr all/some tests have failed > conclusion.txt     
           
       - name: Upload conclusion
         if: steps.check_files1.outputs.files_exists == 'true'
@@ -173,7 +173,7 @@ jobs:
           steps.cpp_s4.outcome == 'success' 
         shell: bash
         run: |
-          expr CPP: All checks have passed > conclusion.txt
+          expr all checks have passed > conclusion.txt
           
       - name: WorkflowStatus21
         if: |
@@ -185,7 +185,7 @@ jobs:
           steps.cpp_s3.outcome != 'success')
         shell: bash
         run: |
-          expr CPP: A problem in configure/make/build has occured > conclusion.txt    
+          expr a problem in configure/make/build has occured > conclusion.txt    
           
           
       - name: WorkflowStatus31
@@ -197,4 +197,11 @@ jobs:
           steps.cpp_s4.outcome != 'success'
         shell: bash
         run: |
-          expr CPP: All/Some tests have failed > conclusion.txt     
+          expr all/some tests have failed > conclusion.txt    
+          
+      - name: Upload conclusion
+        if: steps.check_files2.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: conc
+          path: ./**/*.txt     
