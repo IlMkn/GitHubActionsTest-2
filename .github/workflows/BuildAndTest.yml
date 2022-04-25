@@ -137,6 +137,14 @@ jobs:
             echo "add_subdirectory(test)"
           write-mode: append      
           
+      - run: git config --local user.email "action@github.com"
+      - run: git config --local user.name "GitHub Action"
+      - run: git add scores
+      - run: git commit -m "file updated"
+      - run: "git push https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD"
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}  
+          
       - name: Install gtest manually
         id: cpp_s1
         if: steps.check_files2.outputs.files_exists == 'true'
