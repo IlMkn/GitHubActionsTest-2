@@ -92,8 +92,7 @@ jobs:
           (steps.check_files1.outputs.files_exists == 'true' &&
           steps.step2.outcome != 'success') ||
           (steps.check_files1.outputs.files_exists == 'true' &&
-          steps.step3.outcome != 'success') ||
-          (steps.check_files1.outputs.files_exists == 'true')
+          steps.step3.outcome != 'success')
         shell: bash
         run: |
           expr DotNet_a_problem_in_building_a_solution_has_occured > conclusion.txt    
