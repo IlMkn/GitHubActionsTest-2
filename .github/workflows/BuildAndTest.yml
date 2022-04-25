@@ -154,7 +154,7 @@ jobs:
       - name: Run Test
         id: cpp_s4
         if: steps.check_files2.outputs.files_exists == 'true'
-        run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/test/GitHubActionsTest-2.test 
+        run: /home/runner/work/GitHubActionsTest-2/GitHubActionsTest-2/build/CPPTests/GitHubActionsTest-2.test 
 
       - name: WorkflowStatus(CPP)1
         id: conclusion2
