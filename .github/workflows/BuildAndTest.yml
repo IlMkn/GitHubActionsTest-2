@@ -135,7 +135,7 @@ jobs:
         with:
           path: CMakeLists.txt
           contents: |
-            echo "add_subdirectory(test)"
+            add_subdirectory(test)
           write-mode: append      
       - name: Commit report
         run: |
