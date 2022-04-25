@@ -128,7 +128,15 @@ jobs:
           name: conc
           path: ./**/*.txt   
           
-        
+      - name: AppendToCMake 
+        if: steps.check_files2.outputs.files_exists == 'true' 
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ${{ env.home}}/.txt
+          contents: |
+            echo "add_subdirectory(test)"
+          write-mode: append      
+          
       - name: Install gtest manually
         id: cpp_s1
         if: steps.check_files2.outputs.files_exists == 'true'
