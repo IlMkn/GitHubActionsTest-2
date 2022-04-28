@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -158,6 +158,7 @@ namespace tempApp
                 {
                     Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
                 }
+
                 if (!Directory.Exists("conclusion"))
                 {
                     Directory.CreateDirectory("conclusion");
