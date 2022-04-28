@@ -173,14 +173,9 @@ namespace tempApp
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        //if (entry.FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
                         if (entry.FullName=="conclusion.txt")
                         {
-                            // Gets the full path to ensure that relative segments are removed.
                             string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
-
-                            // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
-                            // are case-insensitive.
                             if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
                                 entry.ExtractToFile(destinationPath, true);
                         }
