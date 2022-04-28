@@ -158,8 +158,36 @@ namespace tempApp
                 {
                     Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
                 }
-                ZipFile.ExtractToDirectory("conc.zip", "conc.txt");
-                string text = System.IO.File.ReadAllText(@"conc.txt\conclusion.txt");
+                if (!Directory.Exists("conclusion"))
+                {
+                    Directory.CreateDirectory("conclusion");
+                }
+
+                string extractPath = Path.GetFullPath("conclusion");
+
+                if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                    extractPath += Path.DirectorySeparatorChar;
+
+                using (ZipArchive archive = ZipFile.OpenRead("conc.zip"))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        //if (entry.FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                        if (entry.FullName=="conclusion.txt")
+                        {
+                            // Gets the full path to ensure that relative segments are removed.
+                            string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                            // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
+                            // are case-insensitive.
+                            if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                                entry.ExtractToFile(destinationPath, true);
+                        }
+                    }
+                }
+
+                File.Delete("conc.zip");
+                string text = System.IO.File.ReadAllText(@"conclusion\conclusion.txt");
 
                 if (text.Contains("all_checks_have_passed"))
                 {
