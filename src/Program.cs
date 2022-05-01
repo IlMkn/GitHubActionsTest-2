@@ -185,15 +185,19 @@ namespace tempApp
                 File.Delete("conc.zip");
                 string text = System.IO.File.ReadAllText(@"conclusion\conclusion.txt");
 
-                if (text.Contains("all_checks_have_passed"))
+                if (text.Contains("All checks have passed"))
                 {
                     Console.WriteLine("Все тесты пройдены");
                 }
-                if (text.Contains("a_problem_in_building_a_solution_has_occured"))
+                if (text.Contains("A problem in building a solution has occured"))
                 {
                     Console.WriteLine("Произошли ошибки в сборке проекта");
                 }
-                if (text.Contains("all/some_tests_have_failed"))
+                if (text.Contains("A problem in configure/make/build has occured"))
+                {
+                    Console.WriteLine("Произошли ошибки в сборке проекта");
+                }
+                if (text.Contains("All/Some tests have failed"))
                 {
                     Console.WriteLine("Все тесты или некоторые из них не были пройдены");
                 }
