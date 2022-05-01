@@ -83,7 +83,7 @@ jobs:
           steps.step4.outcome == 'success'  
         shell: bash
         run: |
-          expr DotNet_all_checks_have_passed > conclusion.txt
+          expr 'DotNet: All checks have passed' > conclusion.txt
           
       - name: WorkflowStatus(CS)2
         if: |
@@ -95,7 +95,7 @@ jobs:
           steps.step3.outcome != 'success')
         shell: bash
         run: |
-          expr DotNet_a_problem_in_building_a_solution_has_occured > conclusion.txt    
+          expr 'DotNet: A problem in building a solution has occured' > conclusion.txt    
           
           
       - name: WorkflowStatus(CS)3
@@ -107,7 +107,7 @@ jobs:
           steps.step3.outcome == 'success' 
         shell: bash
         run: |
-          expr DotNet_all/some_tests_have_failed > conclusion.txt     
+          expr 'DotNet: All/Some tests have failed' > conclusion.txt     
           
       - name: Upload conclusion
         if: steps.check_files1.outputs.files_exists == 'true'
@@ -162,7 +162,7 @@ jobs:
           steps.cpp_s4.outcome == 'success' 
         shell: bash
         run: |
-          expr 'CPP all checks have passed'_$(date +'%Y-%m-%dT%H:%M:%S') > conclusion.txt
+          expr 'CPP: All checks have passed' > conclusion.txt
           
       - name: WorkflowStatus(CPP)2
         if: |
@@ -174,7 +174,7 @@ jobs:
           steps.cpp_s3.outcome != 'success')
         shell: bash
         run: |
-          expr CPP_a_problem_in_configure/make/build_has_occured > conclusion.txt    
+          expr 'CPP: A problem in configure/make/build has occured' > conclusion.txt    
           
           
       - name: WorkflowStatus(CPP)3
@@ -186,7 +186,7 @@ jobs:
           steps.cpp_s4.outcome != 'success'
         shell: bash
         run: |
-          expr CPP_all/some_tests_have_failed > conclusion.txt    
+          expr 'CPP: All/Some tests have failed' > conclusion.txt    
           
       - name: Upload conclusion
         if: steps.check_files2.outputs.files_exists == 'true'
