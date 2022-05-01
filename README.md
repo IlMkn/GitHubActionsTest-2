@@ -110,4 +110,6 @@ Delete Branch - https://github.com/dawidd6/action-delete-branch;<br />
 Setup DotNet - https://github.com/actions/setup-dotnet;<br />
 Setup NuGet - https://github.com/NuGet/setup-nuget;<br />
 Upload Artifact - https://github.com/actions/upload-artifact;<br />
-Write File - https://github.com/DamianReeves/write-file-action.
+Write File - https://github.com/DamianReeves/write-file-action;<br />
+Git functions - https://github.com/libgit2/libgit2sharp;<br />
+JSON library - https://github.com/JamesNK/Newtonsoft.Json.
