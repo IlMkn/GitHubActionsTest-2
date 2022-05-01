@@ -162,7 +162,7 @@ jobs:
           steps.cpp_s4.outcome == 'success' 
         shell: bash
         run: |
-          expr CPP_all_checks_have_passed > conclusion.txt
+          expr 'CPP all checks have passed' > conclusion.txt
           
       - name: WorkflowStatus(CPP)2
         if: |
