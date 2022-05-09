@@ -11,11 +11,11 @@ jobs:
      steps:
        - shell: bash
          run: |
-          expr 'CopyFolder workflow completed succesfully' > conclusionDeleteBranch.txt
+          expr 'DeleteBranch workflow completed succesfully' > conclusionDeleteBranch.txt
        - name: Upload conclusion
          uses: actions/upload-artifact@v2
          with:
-           name: concCopy
+           name: concDeleteBranch
            path: ./**/conclusionDeleteBranch.txt    
 
    on-failure:
@@ -24,9 +24,9 @@ jobs:
      steps:
        - shell: bash
          run: |
-          expr 'CopyFolder workflow completed with an error' > conclusionDeleteBranch.txt
+          expr 'DeleteBranch workflow completed with an error' > conclusionDeleteBranch.txt
        - name: Upload conclusion
          uses: actions/upload-artifact@v2
          with:
-           name: concCopy
+           name: concDeleteBranch
            path: ./**/conclusionDeleteBranch.txt
