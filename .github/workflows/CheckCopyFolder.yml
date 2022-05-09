@@ -1,0 +1,33 @@
+name: Check CopyFolder workflow
+on:
+   workflow_run:
+     workflows: ['Copy']
+     types: [completed]
+
+ jobs:
+   on-success:
+     runs-on: ubuntu-latest
+     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+     shell: bash
+     steps:
+       - run: |
+          expr 'CopyFolder workflow completed succesfully' > conclusionCopyFolder.txt
+       - name: Upload conclusion
+         if: steps.check_files1.outputs.files_exists == 'true'
+         uses: actions/upload-artifact@v2
+         with:
+           name: concCopy
+           path: ./**/conclusionCopyFolder.txt    
+
+   on-failure:
+     runs-on: ubuntu-latest
+     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+     steps:
+       - run: |
+          expr 'CopyFolder workflow completed with a failure' > conclusionCopyFolder.txt
+       - name: Upload conclusion
+         if: steps.check_files1.outputs.files_exists == 'true'
+         uses: actions/upload-artifact@v2
+         with:
+           name: concCopy
+           path: ./**/conclusionCopyFolder.txt
