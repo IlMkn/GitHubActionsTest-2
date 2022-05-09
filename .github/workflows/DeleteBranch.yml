@@ -17,13 +17,13 @@ jobs:
         branches: temp
         
     - name: Deletion status
-      if: steps.deletion.outputs.files_exists == 'true'
+      if: steps.deletion.outcome == 'success'
       shell: bash
       run: |
         expr 'DeleteBranch workflow completed succesfully' > conclusionDeleteBranch.txt
         
     - name: Deletion status(fail)
-      if: steps.deletion.outputs.files_exists == 'false'
+      if: steps.deletion.outcome != 'success'
       shell: bash
       run: |
         expr 'DeleteBranch workflow completed with an error' > conclusionDeleteBranch.txt  
