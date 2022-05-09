@@ -4,12 +4,12 @@ on:
      workflows: ['Copy']
      types: [completed]
 
- jobs:
+jobs:
    on-success:
      runs-on: ubuntu-latest
      if: ${{ github.event.workflow_run.conclusion == 'success' }}
-     shell: bash
      steps:
+       - shell: bash
        - run: |
           expr 'CopyFolder workflow completed succesfully' > conclusionCopyFolder.txt
        - name: Upload conclusion
