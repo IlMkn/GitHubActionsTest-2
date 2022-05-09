@@ -12,6 +12,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: temp
+        token: ${{ secrets.TOKEN }}
     - name: Delete branch
       uses: dawidd6/action-delete-branch@v3
       with:
