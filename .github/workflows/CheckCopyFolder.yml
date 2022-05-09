@@ -23,7 +23,8 @@ jobs:
      runs-on: ubuntu-latest
      if: ${{ github.event.workflow_run.conclusion == 'failure' }}
      steps:
-       - run: |
+       - shell: bash
+         run: |
           expr 'CopyFolder workflow completed with a failure' > conclusionCopyFolder.txt
        - name: Upload conclusion
          if: steps.check_files1.outputs.files_exists == 'true'
