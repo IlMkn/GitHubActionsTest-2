@@ -1,7 +1,7 @@
 name: Check DeleteBranch workflow
 on:
    workflow_run:
-     workflows: ['Delete Branch']
+     workflows: ['DeleteBranch']
      types: [completed]
 
 jobs:
