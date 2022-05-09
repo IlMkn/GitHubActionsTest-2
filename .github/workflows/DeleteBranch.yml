@@ -8,13 +8,29 @@ on:
 jobs:
   deletebranch:
     runs-on: ubuntu-latest
-    steps:        
-    - uses: actions/checkout@v2
-      with:
-        ref: temp
-        token: ${{ secrets.TOKEN }}
+    steps:
     - name: Delete branch
+      id: deletion
       uses: dawidd6/action-delete-branch@v3
       with:
         github_token: ${{ secrets.TOKEN }}
         branches: temp
+        
+    - name: Deletion status
+      if: steps.deletion.outputs.files_exists == 'true'
+      shell: bash
+      run: |
+        expr 'DeleteBranch workflow completed succesfully' > conclusionDeleteBranch.txt
+        
+    - name: Deletion status(fail)
+      if: steps.deletion.outputs.files_exists == 'false'
+      shell: bash
+      run: |
+        expr 'DeleteBranch workflow completed with an error' > conclusionDeleteBranch.txt  
+   
+    - name: Upload conclusion
+      uses: actions/upload-artifact@v2
+      with:
+        name: concDeleteBranch
+        path: ./**/conclusionDeleteBranch.txt       
+
