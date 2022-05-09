@@ -15,7 +15,7 @@ jobs:
       uses: dawidd6/action-delete-branch@v3
       with:
         github_token: ${{ secrets.TOKEN }}
-        branches: temp2
+        branches: temp
         
     - name: Deletion status
       if: steps.deletion.outcome == 'success'
