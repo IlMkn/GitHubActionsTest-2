@@ -24,7 +24,7 @@ jobs:
      steps:
        - shell: bash
          run: |
-          expr 'CopyFolder workflow completed with a failure' > conclusionCopyFolder.txt
+          expr 'CopyFolder workflow completed with an error' > conclusionCopyFolder.txt
        - name: Upload conclusion
          uses: actions/upload-artifact@v2
          with:
