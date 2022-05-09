@@ -1,4 +1,4 @@
-name: Check CopyFolder workflow
+name: Check DeleteBranch workflow
 on:
    workflow_run:
      workflows: ['DeleteBranch']
