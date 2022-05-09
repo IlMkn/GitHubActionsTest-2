@@ -4,6 +4,7 @@ on:
     workflows: ['BuildAndTest']                    
     types:
       - completed
+  workflow_dispatch:
 jobs:
   deletebranch:
     runs-on: ubuntu-latest
