@@ -32,7 +32,7 @@ jobs:
       if: steps.check_files1.outputs.files_exists == 'true' 
       uses: andstor/copycat-action@v3
       with:
-        personal_token: ${{ secrets.TOKEN }}
+        personal_token: ${{ secrets.TOK }}
         src_path: /CSTests/.
         dst_path: /.
         dst_owner: IlMkn
@@ -44,7 +44,7 @@ jobs:
       if: steps.check_files2.outputs.files_exists == 'true' 
       uses: andstor/copycat-action@v3
       with:
-        personal_token: ${{ secrets.TOKEN }}
+        personal_token: ${{ secrets.TOK }}
         src_path: /CPPTests/.
         dst_path: /CPPTests/.
         dst_owner: IlMkn
