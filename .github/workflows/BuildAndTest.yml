@@ -114,7 +114,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: conc
-          path: ./**/*.txt   
+          path: ./**/conclusion.txt   
           
       - name: AppendToCMake 
         if: steps.check_files2.outputs.files_exists == 'true' 
@@ -193,4 +193,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: conc
-          path: ./**/*.txt     
+          path: ./**/conclusion.txt     
