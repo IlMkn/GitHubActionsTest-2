@@ -13,7 +13,6 @@ jobs:
          run: |
           expr 'CopyFolder workflow completed succesfully' > conclusionCopyFolder.txt
        - name: Upload conclusion
-         if: steps.check_files1.outputs.files_exists == 'true'
          uses: actions/upload-artifact@v2
          with:
            name: concCopy
@@ -27,7 +26,6 @@ jobs:
          run: |
           expr 'CopyFolder workflow completed with a failure' > conclusionCopyFolder.txt
        - name: Upload conclusion
-         if: steps.check_files1.outputs.files_exists == 'true'
          uses: actions/upload-artifact@v2
          with:
            name: concCopy
