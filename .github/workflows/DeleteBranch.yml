@@ -11,5 +11,5 @@ jobs:
     - name: Delete branch
       uses: dawidd6/action-delete-branch@v3
       with:
-        github_token: ${{github.token}}
+        github_token: ${{github.tok}}
         branches: temp
