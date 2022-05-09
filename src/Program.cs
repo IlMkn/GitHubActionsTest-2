@@ -105,8 +105,8 @@ namespace tempApp
             Delete(di);
             Directory.Delete(deleteDirPath, true);//удаление временной директории
 
-            Console.WriteLine("Ожидание завершения WorkFlow(120с)");
-            System.Threading.Thread.Sleep(120000);
+            Console.WriteLine("Ожидание завершения WorkFlow(150с)");
+            System.Threading.Thread.Sleep(150000);
 
             HttpClient clienthttp;
 
@@ -124,10 +124,10 @@ namespace tempApp
             string concurl;//url для получения артефакта со статусом выполнения workflow
             string durl;//url для получения артефакта с тестом
             string query;//url для получения артефакта
-            //query = "https://api.github.com/repos/" + ConfigurationManager.AppSettings["Repo"] + "/actions/artifacts";
             query = "https://api.github.com/repos/" + config.Repo + "/actions/artifacts";
 
-            //получение артефакта workflow, который говорит о статусе его выполнения, и получение файла теста в том случае, если workflow был выполнен
+            //получение артефакта workflow, который говорит о статусе его выполнения
+            bool CopyFolderStatus = false;
             Console.WriteLine();
             try
             {
@@ -136,7 +136,7 @@ namespace tempApp
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var RCR = JsonConvert.DeserializeObject<Root>(responseBody);
                 int i = 0;
-                while (RCR.artifacts[i].name != "conc")
+                while ((RCR.artifacts[i].name != "concCopy")&& (i < RCR.artifacts.Count))
                 {
                     i++;
                 }
@@ -144,10 +144,10 @@ namespace tempApp
 
                 try
                 {
-                    var response2 = await clienthttp.GetAsync(@concurl + "?filename=conc.zip");
+                    var response2 = await clienthttp.GetAsync(@concurl + "?filename=concCopy.zip");
                     using (var stream = await response2.Content.ReadAsStreamAsync())
                     {
-                        var fileInfo = new FileInfo("conc.zip");
+                        var fileInfo = new FileInfo("concCopy.zip");
                         using (var fileStream = fileInfo.OpenWrite())
                         {
                             await stream.CopyToAsync(fileStream);
@@ -169,40 +169,244 @@ namespace tempApp
                 if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                     extractPath += Path.DirectorySeparatorChar;
 
-                using (ZipArchive archive = ZipFile.OpenRead("conc.zip"))
+                using (ZipArchive archive = ZipFile.OpenRead("concCopy.zip"))
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        if (entry.FullName=="conclusion.txt")
+                        if (entry.FullName == "conclusionCopyFolder.txt")
                         {
                             string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
                             if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
                                 entry.ExtractToFile(destinationPath, true);
                         }
                     }
                 }
 
-                File.Delete("conc.zip");
-                string text = System.IO.File.ReadAllText(@"conclusion\conclusion.txt");
+                File.Delete("concCopy.zip");
+                string text = System.IO.File.ReadAllText(@"conclusion\conclusionCopyFolder.txt");
 
-                if (text.Contains("All checks have passed"))
+                if (text.Contains("CopyFolder workflow completed succesfully"))
                 {
-                    Console.WriteLine("Все тесты пройдены");
+                    CopyFolderStatus = true;
+                    Console.WriteLine("CopyFolder запустился и успешно завершил работу");
                 }
-                if (text.Contains("A problem in building a solution has occured"))
+                if (text.Contains("CopyFolder workflow completed with an error"))
                 {
-                    Console.WriteLine("Произошли ошибки в сборке проекта");
-                }
-                if (text.Contains("A problem in configure/make/build has occured"))
-                {
-                    Console.WriteLine("Произошли ошибки в сборке проекта");
-                }
-                if (text.Contains("All/Some tests have failed"))
-                {
-                    Console.WriteLine("Все тесты или некоторые из них не были пройдены");
+                    Console.WriteLine("CopyFolder не запустился или завершил работу с ошибкой");
                 }
 
+                if (CopyFolderStatus)
+                {
+                    Console.WriteLine();
+                    response = await clienthttp.GetAsync(query);
+                    response.EnsureSuccessStatusCode();
+                    responseBody = await response.Content.ReadAsStringAsync();
+                    RCR = JsonConvert.DeserializeObject<Root>(responseBody);
+                    i = 0;
+                    while ((RCR.artifacts[i].name != "conc") && (i < RCR.artifacts.Count))
+                    {
+                        i++;
+                    }
+                    concurl = RCR.artifacts[i].archive_download_url;
 
+                    try
+                    {
+                        var response2 = await clienthttp.GetAsync(@concurl + "?filename=conc.zip");
+                        using (var stream = await response2.Content.ReadAsStreamAsync())
+                        {
+                            var fileInfo = new FileInfo("conc.zip");
+                            using (var fileStream = fileInfo.OpenWrite())
+                            {
+                                await stream.CopyToAsync(fileStream);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
+                    }
+
+                    if (!Directory.Exists("conclusion"))
+                    {
+                        Directory.CreateDirectory("conclusion");
+                    }
+
+                    extractPath = Path.GetFullPath("conclusion");
+
+                    if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                        extractPath += Path.DirectorySeparatorChar;
+
+                    using (ZipArchive archive = ZipFile.OpenRead("conc.zip"))
+                    {
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            if (entry.FullName == "conclusion.txt")
+                            {
+                                string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                                if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                                    entry.ExtractToFile(destinationPath, true);
+                            }
+                        }
+                    }
+
+                    File.Delete("conc.zip");
+                    text = System.IO.File.ReadAllText(@"conclusion\conclusion.txt");
+
+                    Console.WriteLine("Работа BuildAndTest:");
+                    if (text.Contains("All checks have passed"))
+                    {
+                        Console.WriteLine("Все тесты пройдены");
+                    }
+                    if (text.Contains("A problem in building a solution has occured"))
+                    {
+                        Console.WriteLine("Произошли ошибки в сборке проекта");
+                    }
+                    if (text.Contains("A problem in configure/make/build has occured"))
+                    {
+                        Console.WriteLine("Произошли ошибки в сборке проекта");
+                    }
+                    if (text.Contains("All/Some tests have failed"))
+                    {
+                        Console.WriteLine("Все тесты или некоторые из них не были пройдены");
+                    }
+
+                    Console.WriteLine();
+                    response = await clienthttp.GetAsync(query);
+                    response.EnsureSuccessStatusCode();
+                    responseBody = await response.Content.ReadAsStringAsync();
+                    RCR = JsonConvert.DeserializeObject<Root>(responseBody);
+                    i = 0;
+                    while ((RCR.artifacts[i].name != "concBuildAndTest") && (i < RCR.artifacts.Count))
+                    {
+                        i++;
+                    }
+                    concurl = RCR.artifacts[i].archive_download_url;
+
+                    try
+                    {
+                        var response2 = await clienthttp.GetAsync(@concurl + "?filename=concBuildAndTest.zip");
+                        using (var stream = await response2.Content.ReadAsStreamAsync())
+                        {
+                            var fileInfo = new FileInfo("concBuildAndTest.zip");
+                            using (var fileStream = fileInfo.OpenWrite())
+                            {
+                                await stream.CopyToAsync(fileStream);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
+                    }
+
+                    if (!Directory.Exists("conclusion"))
+                    {
+                        Directory.CreateDirectory("conclusion");
+                    }
+
+                    extractPath = Path.GetFullPath("conclusion");
+
+                    if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                        extractPath += Path.DirectorySeparatorChar;
+
+                    using (ZipArchive archive = ZipFile.OpenRead("concBuildAndTest.zip"))
+                    {
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            if (entry.FullName == "conclusionBuildAndTest.txt")
+                            {
+                                string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                                if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                                    entry.ExtractToFile(destinationPath, true);
+                            }
+                        }
+                    }
+
+                    File.Delete("concBuildAndTest.zip");
+                    text = System.IO.File.ReadAllText(@"conclusion\conclusionBuildAndTest.txt");
+
+                    if (text.Contains("BuildAndTest workflow completed succesfully"))
+                    {
+                        Console.WriteLine("BuildAndTest успешно завершил работу");
+                    }
+                    if (text.Contains("BuildAndTest workflow completed with an error"))
+                    {
+                        Console.WriteLine("BuildAndTest завершил работу с ошибкой");
+                    }
+
+                    Console.WriteLine();
+                    response = await clienthttp.GetAsync(query);
+                    response.EnsureSuccessStatusCode();
+                    responseBody = await response.Content.ReadAsStringAsync();
+                    RCR = JsonConvert.DeserializeObject<Root>(responseBody);
+                    i = 0;
+                    while ((RCR.artifacts[i].name != "concDeleteBranch") && (i < RCR.artifacts.Count-1))
+                    {
+                        i++;
+                    }
+                    concurl = RCR.artifacts[i].archive_download_url;
+
+                    if (RCR.artifacts[i].name == "concDeleteBranch")
+                    {
+                        try
+                        {
+                            var response2 = await clienthttp.GetAsync(@concurl + "?filename=concDeleteBranch.zip");
+                            using (var stream = await response2.Content.ReadAsStreamAsync())
+                            {
+                                var fileInfo = new FileInfo("concDeleteBranch.zip");
+                                using (var fileStream = fileInfo.OpenWrite())
+                                {
+                                    await stream.CopyToAsync(fileStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
+                        }
+
+                        if (!Directory.Exists("conclusion"))
+                        {
+                            Directory.CreateDirectory("conclusion");
+                        }
+
+                        extractPath = Path.GetFullPath("conclusion");
+
+                        if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                            extractPath += Path.DirectorySeparatorChar;
+
+                        using (ZipArchive archive = ZipFile.OpenRead("concDeleteBranch.zip"))
+                        {
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                if (entry.FullName == "conclusionDeleteBranch.txt")
+                                {
+                                    string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                                    if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                                        entry.ExtractToFile(destinationPath, true);
+                                }
+                            }
+                        }
+
+
+                        File.Delete("concDeleteBranch.zip");
+                        text = System.IO.File.ReadAllText(@"conclusion\conclusionDeleteBranch.txt");
+
+                        if (text.Contains("DeleteBranch workflow completed succesfully"))
+                        {
+                            Console.WriteLine("DeleteBranch успешно завершил работу");
+                        }
+                        if (text.Contains("DeleteBranch workflow completed with an error"))
+                        {
+                            Console.WriteLine("DeleteBranch завершил работу с ошибкой");
+                        }
+
+                    }
+                }
             }
             catch (HttpRequestException e)
             {
