@@ -15,7 +15,7 @@ jobs:
        - name: Upload conclusion
          uses: actions/upload-artifact@v2
          with:
-           name: concCopy
+           name: concBuildAndTest
            path: ./**/conclusionBuildAndTest.txt    
 
    on-failure:
@@ -28,5 +28,5 @@ jobs:
        - name: Upload conclusion
          uses: actions/upload-artifact@v2
          with:
-           name: concCopy
+           name: concBuildAndTest
            path: ./**/conclusionBuildAndTest.txt
