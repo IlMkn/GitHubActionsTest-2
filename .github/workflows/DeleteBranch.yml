@@ -8,7 +8,8 @@ on:
 jobs:
   deletebranch:
     runs-on: ubuntu-latest
-    steps:         
+    steps:        
+    - uses: actions/checkout@v2
     - name: Delete branch
       uses: dawidd6/action-delete-branch@v3
       with:
