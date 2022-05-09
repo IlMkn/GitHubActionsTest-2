@@ -1,4 +1,4 @@
-name: 'Delete branch'
+name: DeleteBranch
 on:
   workflow_run:
     workflows: ['BuildAndTest']                    
