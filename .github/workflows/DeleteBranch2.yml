@@ -1,0 +1,31 @@
+name: Delete
+on: [workflow_dispatch]
+jobs:
+  deletebranch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete branch
+        continue-on-error: true
+        id: deletion
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branches: temp
+        
+      - name: Deletion status
+        if: steps.deletion.outcome == 'success'
+        shell: bash
+        run: |
+          expr 'DeleteBranch workflow completed succesfully' > conclusionDeleteBranch.txt
+        
+      - name: Deletion status(fail)
+        if: steps.deletion.outcome != 'success'
+        shell: bash
+        run: |
+          expr 'DeleteBranch workflow completed with an error' > conclusionDeleteBranch.txt  
+   
+      - name: Upload conclusion
+        uses: actions/upload-artifact@v2
+        with:
+          name: concDeleteBranch
+          path: ./**/conclusionDeleteBranch.txt       
