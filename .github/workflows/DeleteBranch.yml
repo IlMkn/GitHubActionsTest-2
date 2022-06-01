@@ -4,6 +4,4 @@ jobs:
   deletebranch:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete branch
-        continue-on-error: true
-        id: deletion
+      - uses: actions/checkout@master
