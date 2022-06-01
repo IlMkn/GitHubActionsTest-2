@@ -7,3 +7,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Delete file 
         run: rm -f /.github/workflows/DeleteBranch.yml
+        
+      - name: Commit CMake change
+        run: |
+          git config --global user.name 'Github Actions'
+          git config --global user.email 'action@github.com'
+          git commit -am "update"
+          git push    
