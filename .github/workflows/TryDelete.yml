@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Delete file 
-        run: rm -f /.github/workflows/DeleteBranch.yml
+        run: rm -f .github/workflows/DeleteBranch.yml
         
       - name: Commit CMake change
         run: |
