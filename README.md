@@ -179,7 +179,7 @@
 
 В локальной папке дебага можно также найти сам артефакт(conclusion.txt), в котором также будет вывод из workflow:
 
-![](./images/localfiles.PNG)
+![](./images/localConclusion.PNG)
 
 ## Использованные API
 Checkout - https://github.com/actions/checkout;<br />
@@ -191,4 +191,5 @@ Setup NuGet - https://github.com/NuGet/setup-nuget;<br />
 Upload Artifact - https://github.com/actions/upload-artifact;<br />
 Write File - https://github.com/DamianReeves/write-file-action;<br />
 Git functions - https://github.com/libgit2/libgit2sharp;<br />
-JSON library - https://github.com/JamesNK/Newtonsoft.Json.
+JSON library - https://github.com/JamesNK/Newtonsoft.Json;<br />
+Worklfow Dispatch - https://github.com/benc-uk/workflow-dispatch.
