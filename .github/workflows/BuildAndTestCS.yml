@@ -14,7 +14,6 @@ jobs:
           token: ${{ secrets.TOKEN }}
           
       - name: Check file existence1
-        id: check_files1
         uses: andstor/file-existence-action@v1.1.0
         with:
           files: "**/*.csproj"
@@ -33,15 +32,11 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
         
       - name: Create sln
-        continue-on-error: true
-        id: step1
         working-directory: ./myNewFolder
         if: steps.check_files1.outputs.files_exists == 'true'
         run: dotnet new sln --name t
           
       - name: Add csproj
-        continue-on-error: true
-        id: step2
         if: steps.check_files1.outputs.files_exists == 'true'
         run: |
           dotnet sln ./myNewFolder/t.sln add **/TestConsoleApp.csproj
@@ -50,15 +45,11 @@ jobs:
           nuget restore ./myNewFolder/t.sln
                   
       - name: Build
-        continue-on-error: true
-        id: step3
         if: steps.check_files1.outputs.files_exists == 'true'
         run: |
           dotnet build ./myNewFolder/t.sln
 
       - name: Test
-        continue-on-error: true
-        id: step4
         if: steps.check_files1.outputs.files_exists == 'true'
         run: |
           dotnet test XUnitTestProject1.csproj --logger "trx;LogFileName=test-results.trx"  
