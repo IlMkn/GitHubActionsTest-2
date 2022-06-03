@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir myNewFolder 
           
-      - name: Setup NuGet.exe for use with actions
+      - name: Setup NuGet for use with actions
         if: steps.check_files1.outputs.files_exists == 'true'
         uses: NuGet/setup-nuget@v1.0.5
         
