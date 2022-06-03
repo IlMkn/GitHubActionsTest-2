@@ -64,6 +64,185 @@ namespace tempApp
             deleteDirPath = Path.GetFullPath(Path.Combine(@deleteDirPath, @"..\..\..\..\..\"));
             deleteDirPath = Path.GetFullPath(Path.Combine(@deleteDirPath, @config.deleteDir));
 
+            WebClient wc = new WebClient();
+            wc.Headers.Add("user-agent",
+                "Mozilla / 5.0(Windows NT 6.1) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 41.0.2228.0 Safari / 537.36");
+            try
+            {
+                wc.DownloadFile("https://raw.githubusercontent.com/IlMkn/GitHubActionsTest-2/master/.github/workflows/BuildAndTestCS.yml", "BuildAndTestCS.txt");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            List<string> namesList = new List<string>();
+            string text0 = "";
+            int count = 0;
+            int tempIndex = 0;
+            foreach (string line in File.ReadLines("BuildAndTestCS.txt"))
+            {
+                text0 += line + '\n';
+                if (line.Contains(" - name: "))
+                {
+                    tempIndex = line.IndexOf('-');
+                    string stepName = line.Substring(line.IndexOf(':') + 2);
+                    namesList.Add(stepName.Replace(' ', '_'));
+                    count++;
+                    for (int i = 0; i < line.IndexOf('n'); i++)
+                    {
+                        text0 += " ";
+                    }
+                    text0 += "continue-on-error: true" + '\n';
+                    for (int i = 0; i < line.IndexOf('n'); i++)
+                    {
+                        text0 += " ";
+                    }
+                    text0 += "id: step_" + stepName.Replace(' ', '_') + '\n';
+                    count++;
+                }
+            }
+
+            foreach (var element in namesList)
+            {
+
+                for (int i = 0; i < tempIndex; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "- name: Check step(true) - " + element + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "if: steps.step_" + element + ".outcome == 'success'" + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "shell: bash" + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "run: |" + '\n';
+
+                for (int i = 0; i < tempIndex + 4; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "expr 'Step " + element + " is succesful' > " + element + "-art.txt" + '\n';
+
+
+                for (int i = 0; i < tempIndex; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "- name: Check step(false) - " + element + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "if: steps.step_" + element + ".outcome != 'success'" + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "shell: bash" + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "run: |" + '\n';
+
+                for (int i = 0; i < tempIndex + 4; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "expr 'Step " + element + " has failed' > " + element + "-art.txt" + '\n';
+                text0 += '\n';
+            }
+
+
+            foreach (var element in namesList)
+            {
+
+                for (int i = 0; i < tempIndex; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "- name: Add artifact for step - " + element + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "uses: actions/upload-artifact@v2" + '\n';
+
+                for (int i = 0; i < tempIndex + 2; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "with:" + '\n';
+
+                for (int i = 0; i < tempIndex + 4; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "name: " + element + "-art" + '\n';
+
+                for (int i = 0; i < tempIndex + 4; i++)
+                {
+                    text0 += " ";
+                }
+                text0 += "path: ./**/" + element + "-art.txt" + '\n';
+                text0 += '\n';
+            }
+
+            for (int i = 0; i < tempIndex; i++)
+            {
+                text0 += " ";
+            }
+            text0 += "- name: Invoke workflow without inputs"+'\n';
+
+            for (int i = 0; i < tempIndex + 2; i++)
+            {
+                text0 += " ";
+            }
+            text0 += "uses: benc-uk/workflow-dispatch@v1" + '\n';
+
+            for (int i = 0; i < tempIndex + 2; i++)
+            {
+                text0 += " ";
+            }
+            text0 += "with:" + '\n';
+
+            for (int i = 0; i < tempIndex + 4; i++)
+            {
+                text0 += " ";
+            }
+            text0 += "workflow: Delete" + '\n';
+
+            for (int i = 0; i < tempIndex + 4; i++)
+            {
+                text0 += " ";
+            }
+            text0 += "token: ${{ secrets.TOKEN }}" + '\n';
+
+            File.WriteAllText("BuildAndTestCS.txt", String.Empty);
+            File.WriteAllText("BuildAndTestCS.txt", text0);
+
+
+            File.Move("BuildAndTestCS.txt", Path.ChangeExtension("BuildAndTestCS.txt", ".yml"),true);
+            File.Move("BuildAndTestCS.yml", sourceDirPath.ToString() + @"\.github\workflows\BuildAndTestCS.yml", true);
+
+            
             try
             {
                 Program.Copy(sourceDirPath, targetDirPath);
@@ -186,156 +365,96 @@ namespace tempApp
                 File.Delete("concCopy.zip");
                 string text = System.IO.File.ReadAllText(@"conclusion\conclusionCopyFolder.txt");
 
-                if (text.Contains("CopyFolder workflow completed succesfully"))
+                if (text.Contains("Copy workflow completed succesfully"))
                 {
                     CopyFolderStatus = true;
                     Console.WriteLine("CopyFolder запустился и успешно завершил работу");
                 }
-                if (text.Contains("CopyFolder workflow completed with an error"))
+                if (text.Contains("Copy workflow completed with an error"))
                 {
                     Console.WriteLine("CopyFolder не запустился или завершил работу с ошибкой");
                 }
 
                 if (CopyFolderStatus)
                 {
+
+                    Console.WriteLine("Работа BuildAndTestCS:");
+                    int successCount = 0;
+                    int stepCount = 0;
+                    foreach (var element in namesList)
+                    {
+                        Console.WriteLine();
+                        response = await clienthttp.GetAsync(query);
+                        response.EnsureSuccessStatusCode();
+                        responseBody = await response.Content.ReadAsStringAsync();
+                        RCR = JsonConvert.DeserializeObject<Root>(responseBody);
+                        i = 0;
+
+                        string tempStr = element + "-art";
+                        while ((RCR.artifacts[i].name != tempStr) && (i < RCR.artifacts.Count))
+                        {
+                            i++;
+                        }
+                        concurl = RCR.artifacts[i].archive_download_url;
+
+
+                        try
+                        {
+                            var response2 = await clienthttp.GetAsync(@concurl + "?filename="+element+"-art.zip");
+                            using (var stream = await response2.Content.ReadAsStreamAsync())
+                            {
+                                var fileInfo = new FileInfo(element + "-art.zip");
+                                using (var fileStream = fileInfo.OpenWrite())
+                                {
+                                    await stream.CopyToAsync(fileStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
+                        }
+
+                        if (!Directory.Exists("conclusion"))
+                        {
+                            Directory.CreateDirectory("conclusion");
+                        }
+
+                        extractPath = Path.GetFullPath("conclusion");
+
+                        if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                            extractPath += Path.DirectorySeparatorChar;
+
+                        using (ZipArchive archive = ZipFile.OpenRead(element + "-art.zip"))
+                        {
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                if (entry.FullName == element + "-art.txt")
+                                {
+                                    string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                                    if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                                        entry.ExtractToFile(destinationPath, true);
+                                }
+                            }
+                        }
+
+                        File.Delete(element + "-art.zip");
+                        text = System.IO.File.ReadAllText(@"conclusion\"+ element + "-art.txt");
+
+                        if (text.Contains("is succesful"))
+                        {
+                            Console.WriteLine("  {0}  Шаг {1} успешно завершил работу", stepCount + 1, element);
+                            successCount++;
+                        }
+                        if (text.Contains("has failed"))
+                        {
+                            Console.WriteLine("  {0}  Шаг {1} завершил работу с ошибкой", stepCount + 1, element);
+                        }
+                        stepCount++;
+                    }
                     Console.WriteLine();
-                    response = await clienthttp.GetAsync(query);
-                    response.EnsureSuccessStatusCode();
-                    responseBody = await response.Content.ReadAsStringAsync();
-                    RCR = JsonConvert.DeserializeObject<Root>(responseBody);
-                    i = 0;
-                    while ((RCR.artifacts[i].name != "conc") && (i < RCR.artifacts.Count))
-                    {
-                        i++;
-                    }
-                    concurl = RCR.artifacts[i].archive_download_url;
-
-                    try
-                    {
-                        var response2 = await clienthttp.GetAsync(@concurl + "?filename=conc.zip");
-                        using (var stream = await response2.Content.ReadAsStreamAsync())
-                        {
-                            var fileInfo = new FileInfo("conc.zip");
-                            using (var fileStream = fileInfo.OpenWrite())
-                            {
-                                await stream.CopyToAsync(fileStream);
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
-                    }
-
-                    if (!Directory.Exists("conclusion"))
-                    {
-                        Directory.CreateDirectory("conclusion");
-                    }
-
-                    extractPath = Path.GetFullPath("conclusion");
-
-                    if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-                        extractPath += Path.DirectorySeparatorChar;
-
-                    using (ZipArchive archive = ZipFile.OpenRead("conc.zip"))
-                    {
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            if (entry.FullName == "conclusion.txt")
-                            {
-                                string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
-
-                                if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
-                                    entry.ExtractToFile(destinationPath, true);
-                            }
-                        }
-                    }
-
-                    File.Delete("conc.zip");
-                    text = System.IO.File.ReadAllText(@"conclusion\conclusion.txt");
-
-                    Console.WriteLine("Работа BuildAndTest:");
-                    if (text.Contains("All checks have passed"))
-                    {
-                        Console.WriteLine("Все тесты пройдены");
-                    }
-                    if (text.Contains("A problem in building a solution has occured"))
-                    {
-                        Console.WriteLine("Произошли ошибки в сборке проекта");
-                    }
-                    if (text.Contains("A problem in configure/make/build has occured"))
-                    {
-                        Console.WriteLine("Произошли ошибки в сборке проекта");
-                    }
-                    if (text.Contains("All/Some tests have failed"))
-                    {
-                        Console.WriteLine("Все тесты или некоторые из них не были пройдены");
-                    }
-
-                    Console.WriteLine();
-                    response = await clienthttp.GetAsync(query);
-                    response.EnsureSuccessStatusCode();
-                    responseBody = await response.Content.ReadAsStringAsync();
-                    RCR = JsonConvert.DeserializeObject<Root>(responseBody);
-                    i = 0;
-                    while ((RCR.artifacts[i].name != "concBuildAndTest") && (i < RCR.artifacts.Count))
-                    {
-                        i++;
-                    }
-                    concurl = RCR.artifacts[i].archive_download_url;
-
-                    try
-                    {
-                        var response2 = await clienthttp.GetAsync(@concurl + "?filename=concBuildAndTest.zip");
-                        using (var stream = await response2.Content.ReadAsStreamAsync())
-                        {
-                            var fileInfo = new FileInfo("concBuildAndTest.zip");
-                            using (var fileStream = fileInfo.OpenWrite())
-                            {
-                                await stream.CopyToAsync(fileStream);
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Возникла ошибка при скачивании {0}", e.Message);
-                    }
-
-                    if (!Directory.Exists("conclusion"))
-                    {
-                        Directory.CreateDirectory("conclusion");
-                    }
-
-                    extractPath = Path.GetFullPath("conclusion");
-
-                    if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-                        extractPath += Path.DirectorySeparatorChar;
-
-                    using (ZipArchive archive = ZipFile.OpenRead("concBuildAndTest.zip"))
-                    {
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            if (entry.FullName == "conclusionBuildAndTest.txt")
-                            {
-                                string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
-
-                                if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
-                                    entry.ExtractToFile(destinationPath, true);
-                            }
-                        }
-                    }
-
-                    File.Delete("concBuildAndTest.zip");
-                    text = System.IO.File.ReadAllText(@"conclusion\conclusionBuildAndTest.txt");
-
-                    if (text.Contains("BuildAndTest workflow completed succesfully"))
-                    {
-                        Console.WriteLine("BuildAndTest успешно завершил работу");
-                    }
-                    if (text.Contains("BuildAndTest workflow completed with an error"))
-                    {
-                        Console.WriteLine("BuildAndTest завершил работу с ошибкой");
-                    }
+                    Console.WriteLine("Процент выполнения workflow - {0}%", successCount/(double)namesList.Count*100);
 
                     Console.WriteLine();
                     response = await clienthttp.GetAsync(query);
@@ -413,6 +532,9 @@ namespace tempApp
                 Console.WriteLine("\nОшибка в поиске конкретного репозитория");
                 Console.WriteLine("Message :{0} ", e.Message);
             }
+            
+
+            
         }
     }
 }
