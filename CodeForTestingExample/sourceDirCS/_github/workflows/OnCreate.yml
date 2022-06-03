@@ -1,0 +1,28 @@
+name: OnCreate
+on:
+  create:
+    branches: 
+jobs:
+  sync-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: temp
+
+      - name: Copycat1
+        uses: andstor/copycat-action@v3
+        with:
+          personal_token: ${{ secrets.TOKEN }}
+          src_path: /.github/workflows/DeleteBranch.yml
+          dst_path: /.github/workflows/.
+          dst_owner: IlMkn
+          dst_repo_name: GitHubActionsTest-2
+          dst_branch: main
+          src_branch: temp    
+
+      - name: Invoke workflow without inputs
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: OnCreateDispatch
+          token: ${{ secrets.TOKEN }}

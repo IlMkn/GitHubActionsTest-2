@@ -1,0 +1,76 @@
+name: OnCreateDispatch
+on: [workflow_dispatch]
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: temp
+        
+    - name: Check file existence1
+      id: check_files1
+      uses: andstor/file-existence-action@v1.1.0
+      with:
+        files: "**/*.csproj"
+
+    - name: Check file existence2
+      id: check_files2
+      uses: andstor/file-existence-action@v1.1.0
+      with:
+        files: "**/*.cpp"    
+        
+    - uses: actions/checkout@v2
+      with:
+        ref: main    
+    - name: Copycat1
+      continue-on-error: true
+      id: step_Copycat1
+      if: steps.check_files1.outputs.files_exists == 'true' 
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ secrets.TOKEN }}
+        src_path: /CSTests/.
+        dst_path: /.
+        dst_owner: IlMkn
+        dst_repo_name: GitHubActionsTest-2
+        dst_branch: temp
+        src_branch: main
+        
+    - name: Copycat2
+      continue-on-error: true
+      id: step_Copycat2
+      if: steps.check_files2.outputs.files_exists == 'true' 
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ secrets.TOKEN }}
+        src_path: /CPPTests/.
+        dst_path: /CPPTests/.
+        dst_owner: IlMkn
+        dst_repo_name: GitHubActionsTest-2
+        dst_branch: temp
+        src_branch: main
+ 
+    - name: CheckCopyStatus(success)
+      if: steps.step_Copycat1.outcome == 'success'
+      shell: bash
+      run: |
+        expr 'Copy workflow completed succesfully' > conclusionCopyFolder.txt
+
+    - name: CheckCopyStatus(failure)
+      if: steps.step_Copycat1.outcome != 'success'
+      shell: bash
+      run: |
+        expr 'Copy workflow completed with an error' > conclusionCopyFolder.txt
+
+    - name: Upload conclusion
+      uses: actions/upload-artifact@v2
+      with:
+        name: concCopy
+        path: ./**/conclusionCopyFolder.txt
+    
+    - name: Invoke workflow without inputs
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: BuildAndTestCS
+        token: ${{ secrets.TOKEN }}
